@@ -1,0 +1,694 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>Kubernetes</title>
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/myplanet.css">
+	<link rel="stylesheet" href="css/presentation.css">
+
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<link rel="icon" href="lib/myplanet/logo/radiant-orange/mark-knockout.svg" />
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+	<div class="reveal pattern--orange-river">
+		<div class="slides">
+			<section class="intro" id="intro">
+				<div class="logo-wrapper">
+					<div class="logo logokube"><span class="visually-hidden"></span></div>
+					<div class="logo"><span class="visually-hidden"></span></div>
+				</div>
+			</section>
+			<section class="title" id="title">
+				<div class="grid-wrapper">
+					<div class="header">
+						<!-- Remove logo--full class to only show brand mark -->
+						<div class="logo logo--full"><span class="visually-hidden">Kubernetes</span></div>
+					</div>
+					<div class="content">
+						<h1>Kubernetes</h1>
+						<div class="description">
+							<ol>
+								<li class="fragment">O que é Kubernetes?<ul>
+										<li>Virtualization/Containers</li>
+										<li>Kubernetes Objects</li>
+									</ul>
+								</li>
+								<li class="fragment">Por que Kubernetes?</li>
+							</ol>
+						</div>
+					</div>
+					<div class="credit">
+						<hr />
+						<div class="label">Apresentado por</div>
+						<div class="role">Cloud Engineering</div>
+					</div>
+				</div>
+				<aside class="notes">
+					Quando eu estava pensando no conteúdo dessa palestra, comecei a perceber que precisava parar de mergulhar em cada
+					conceito para terminar essa conversa em uma quantidade razoável de tempo. Tentei tocar cada aspecto fundamental
+					dos kubernetes sem ir muito fundo. Minha intenção é que possamos começar a falar sobre os diferentes tópicos em
+					uma alavanca mais profunda no futuro e eu encorage os membros do cloudeng a dar outras palestras sobre os assuntos
+					e me corrija a qualquer momento para que possamos aprender juntos.
+				</aside>
+			</section>
+
+			<section class="quote color--midnight present" id="quote--midnight" style="display: block;">
+				<div class="grid-wrapper">
+					<div class="logo"></div>
+					<blockquote>
+						<p>
+							O que é kubernetes?
+						</p>
+						<hr class="fragment" data-fragment-index="1">
+						<cite class="fragment" data-fragment-index="1">Kubernetes é um sistema para orquestração de aplicações
+							contenerizadas.</cite>
+					</blockquote>
+				</div>
+				<aside class="notes">
+					Se o Kubernetes estiver relacionado a aplicações em contêineres, precisamos entender primeiro os fundamentos dos
+					contêineres e qual é o problema que essa tecnologia está tentando resolver.
+
+					Para exemplificar quais contêineres estou propondo, vamos dar uma olhada mais de perto no que forma uma aplicação
+					moderna nos dias de hoje.
+				</aside>
+			</section>
+
+
+			<section class="quote color--dark" id="basic-app">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Aplicação básica rodando em um bare metal</div>
+					</div>
+					<div class="content">
+						<div id="vm-app-layers">
+							<div style="background-color: #e53935; ; margin-left: 8%; margin-right: 8%;" class="app-layer fragment"
+							 data-fragment-index="8">Application Config</div>
+							<div style="background-color: #c62828; margin-left: 7%; margin-right: 7%;" class="app-layer fragment"
+							 data-fragment-index="7">Application</div>
+							<div style="background-color: #303f9f; margin-left: 6%; margin-right: 6%;" class="app-layer fragment"
+							 data-fragment-index="6">Language Runtime</div>
+							<div style="background-color: #00897b; margin-left: 5%; margin-right: 5%;" class="app-layer fragment"
+							 data-fragment-index="5">Shared Libraries</div>
+							<div style="background-color: #78909c; margin-left: 4%; margin-right: 4%;" class="app-layer fragment"
+							 data-fragment-index="4">File System</div>
+							<div style="background-color: #78909c; margin-left: 3%; margin-right: 3%;" class="app-layer fragment"
+							 data-fragment-index="3">Os/Os Kernel</div>
+							<div style="background-color: #455a64; margin-left: 2%; margin-right: 2%;" class="app-layer fragment"
+							 data-fragment-index="2">Hardware Drivers</div>
+							<div style="background-color: #37474f; margin-left: 1%; margin-right: 1%;" class="app-layer fragment"
+							 data-fragment-index="1">Hardware</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="quote color--midnight present" id="Immutability" style="display: block;">
+				<div class="grid-wrapper">
+					<div class="logo"></div>
+					<blockquote>
+						<p>
+							Imutabilidade
+						</p>
+						<hr class="fragment" data-fragment-index="1">
+						<ol>
+							<li class="fragment">Previsibilidade
+								<ul>
+									<li class="fragment">Não há desvio de configuração</li>
+									<li class="fragment">Ambientes estáveis e de fácil escalonamento horizontal</li>
+								</ul>
+							</li>
+							<li class="fragment">Processo simples de rollback e recuperação</li>
+						</ol>
+					</blockquote>
+				</div>
+			</section>
+
+			<section class="subsection" data-background-image="lib/myplanet/img/cloud-vms.jpeg" data-background-size="cover">
+				<div class="grid-wrapper">
+					<h1 style="color: #FFF">Virtualização</h1>
+					<aside class="notes">O que está permitindo esse isolamento é o que chamamos hoje de máquinas virtuais ou VMs. Essa
+						é a tecnologia que tornou você capaz de executar um pequeno aplicativo no mesmo hardware que o Netflix e outras
+						grandes empresas usam.
+					</aside>
+				</div>
+			</section>
+
+
+			<section class="quote color--dark" id="virtualized-app-1">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Aplicação básica rodando em uma virtual machine</div>
+					</div>
+					<div class="content">
+						<div id="vm-app-layers">
+							<div style="background-color: #e53935; margin-left: 15%; margin-right: 15%;" class="app-layer fragment"
+							 data-fragment-index="4">Application Config</div>
+							<div style="background-color: #c62828; ; margin-left: 13%; margin-right: 14%;" class="app-layer fragment"
+							 data-fragment-index="4">Application</div>
+							<div style="background-color: #283593; ; margin-left: 12%; margin-right: 12%;" class="app-layer fragment"
+							 data-fragment-index="4">Language Runtime</div>
+							<div style="background-color: #303f9f; margin-left: 11%; margin-right: 11%;" class="app-layer fragment"
+							 data-fragment-index="4">Shared Libraries</div>
+							<div style="background-color: #303f9f; margin-left: 10%; margin-right: 10%;" class="app-layer fragment"
+							 data-fragment-index="4">User Processess</div>
+							<div style="background-color: #00897b; margin-left: 9%; margin-right: 9%;" class="app-layer fragment"
+							 data-fragment-index="4">Os Kernel</div>
+							<div style="background-color: #78909c; margin-left: 4%; margin-right: 4%;" class="app-layer fragment"
+							 data-fragment-index="2">Virtual Drivers</div>
+							<div style="background-color: #78909c; margin-left: 3%; margin-right: 3%;" class="app-layer fragment"
+							 data-fragment-index="2">Hypervisor</div>
+							<div style="background-color: #455a64; margin-left: 2%; margin-right: 2%;" class="app-layer fragment"
+							 data-fragment-index="1">Hardware Drivers</div>
+							<div style="background-color: #37474f; margin-left: 1%; margin-right: 1%;" class="app-layer fragment"
+							 data-fragment-index="1">Hardware</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+
+			<!-- <section class="subsection" data-background-image="lib/myplanet/img/reach-cloud.jpg" data-background-size="cover">
+					<div class="grid-wrapper">
+						<h1 style="color: #FFF">Cloud</h1>
+					</div>
+				</section> -->
+
+			<section class="quote color--dark" id="containerized-app">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Aplicação Contenerizada</div>
+					</div>
+					<div class="content">
+						<div class="content">
+							<div id="vm-app-layers">
+								<div style="background-color: #2e7d32; margin-left: 40%; margin-right: 40%;" class="app-layer fragment"
+								 data-fragment-index="3">Application Config</div>
+								<div style="background-color: #2e7d32; margin-left: 40%; margin-right: 40%;" class="app-layer fragment"
+								 data-fragment-index="3">Application</div>
+								<div style="background-color: #2e7d32; margin-left: 40%; margin-right: 40%;" class="app-layer fragment"
+								 data-fragment-index="3">Language Runtime</div>
+								<div style="background-color: #2e7d32; margin-left: 40%; margin-right: 40%;" class="app-layer fragment"
+								 data-fragment-index="3">Shared Libraries</div>
+								<div style="background-color: #2e7d32; margin-left: 40%; margin-right: 40%;" class="app-layer fragment"
+								 data-fragment-index="3">File System</div>
+								<div style="background-color: #bf360c; margin-left: 11%; margin-right: 11%;" class="app-layer fragment"
+								 data-fragment-index="2">Container runtime</div>
+								<div style="background-color: #bf360c; margin-left: 9%; margin-right: 9%;" class="app-layer fragment"
+								 data-fragment-index="2">Os Kernel</div>
+								<div style="background-color: #78909c; margin-left: 4%; margin-right: 4%;" class="app-layer fragment"
+								 data-fragment-index="1">Virtual Drivers</div>
+								<div style="background-color: #78909c; margin-left: 3%; margin-right: 3%;" class="app-layer fragment"
+								 data-fragment-index="1">Hypervisor</div>
+								<div style="background-color: #455a64; margin-left: 2%; margin-right: 2%;" class="app-layer fragment"
+								 data-fragment-index="1">Hardware Drivers</div>
+								<div style="background-color: #37474f; margin-left: 1%; margin-right: 1%;" class="app-layer fragment"
+								 data-fragment-index="1">Hardware</div>
+							</div>
+						</div>
+						<aside class="notes">Os contêineres e a tecnologia que o contêiner constrói permitem que as pessoas utilizem um
+							programa que desejam executar no computador de destino - um servidor, que pode ser instalado em um laptop que
+							pode ser executado em um ambiente de teste ou em uma produção ambiente com muito poucas mudanças e com um alto
+							grau de previsibilidade.
+
+							Depois de ter esse bloco de construção de ser capaz de executar um programa específico de forma confiável em um
+							computador particular</aside>
+					</div>
+				</div>
+			</section>
+
+			<section class="quote color--dark" id="containerized-demystification">
+				<section class="quote color--dark" id="containerized-demystification-intro">
+					<div class="grid-wrapper">
+						<div class="header">
+							<div class="logo"></div>
+							<div class="section">O que é um container?</div>
+						</div>
+						<ol>
+							<li class="fragment">Linux Namespaces (2002)<ul>
+									<li>Isolamento processos(PID), network, usuário, etc.</li>
+								</ul>
+							</li>
+							<li class="fragment">Control Groups (2007)<ul>
+									<li>CPU, memória, I/O, network, etc.</li>
+								</ul>
+							</li>
+							<li class="fragment">Implementações mais usadas:<ul>
+									<li>LXC/LXD (2007)</li>
+									<li>Docker (2013)</li>
+								</ul>
+							</li>
+						</ol>
+					</div>
+				</section>
+				<section class="quote color--dark" id="containerized-demystification-base">
+					<div class="grid-wrapper">
+						<div class="header">
+							<div class="logo"></div>
+							<div class="section">Wrap básico</div>
+						</div>
+						<figure class="code">
+							<pre><code class="golang">
+								func run() {
+									cmd := exec.Command(os.Args[2], os.Args[3:]...)
+									cmd.Stdin = os.Stdin
+									cmd.Stdout = os.Stdout
+									cmd.Stderr = os.Stderr
+								
+									must(cmd.Run())
+								}
+							</code></pre>
+						</figure>
+						<figure class="code">
+							<pre><code class="bash">
+								[root@localhost /test]$ ./fancker run bash
+								[root@localhost /test]$ hostname
+								localhost.localdomain
+							</code></pre>
+						</figure>
+					</div>
+				</section>
+				<section class="quote color--dark" id="containerized-demystification-namespace">
+					<div class="grid-wrapper">
+						<div class="header">
+							<div class="logo"></div>
+							<div class="section">Namespace UTS</div>
+						</div>
+						<figure class="code">
+							<pre><code class="golang">
+								func run(){
+									...
+									cmd := exec.Command("/proc/self/exe", append([]string{"child"}, os.Args[2:]...)...)
+									cmd.SysProcAttr = &syscall.SysProcAttr{
+										Cloneflags:   syscall.CLONE_NEWUTS | syscall.CLONE_NEWNS,
+										Unshareflags: syscall.CLONE_NEWNS,
+									}
+									...
+								}
+								
+								func child() {
+									must(os.Chdir("/"))
+									must(syscall.Sethostname([]byte("container")))
+									...
+								}
+							</code></pre>
+						</figure>
+						<figure class="code">
+							<pre><code class="bash">
+								[root@localhost /test]$ ./fancker run bash
+								[root@container /]$ hostname
+								container
+							</code></pre>
+						</figure>
+					</div>
+				</section>
+				<section class="quote color--dark" id="containerized-demystification-chroot-1">
+					<div class="grid-wrapper">
+						<div class="header">
+							<div class="logo"></div>
+							<div class="section">Proccess ID</div>
+						</div>
+						<figure class="code">
+							<pre><code class="golang">
+								func run(){
+									fmt.Printf("Running %v, %v \n", os.Args[2:], os.Getpid())
+									...
+								}
+								
+								func child() {
+									fmt.Printf("Running %v, %v \n", os.Args[2:], os.Getpid())
+									...
+								}
+							</code></pre>
+						</figure>
+						<figure class="code">
+							<pre><code class="bash">
+								[root@localhost /test]$ ./fancker run bash
+								Running [bash], 28820
+								Running [bash], 28823
+								[root@container /]$ ps -T
+								PID  SPID TTY          TIME CMD
+								28859 28859 pts/0    00:00:00 fancker
+								28859 28860 pts/0    00:00:00 fancker
+								28859 28861 pts/0    00:00:00 fancker
+								...
+								28865 28865 pts/0    00:00:00 bash
+								28878 28878 pts/0    00:00:00 ps
+							</code></pre>
+						</figure>
+					</div>
+				</section>
+				<section class="quote color--dark" id="containerized-demystification-chroot-2">
+					<div class="grid-wrapper">
+						<div class="header">
+							<div class="logo"></div>
+							<div class="section">Proccess ID - CHRoot</div>
+						</div>
+						<figure class="code">
+							<pre><code class="golang">
+								func run(){
+									cmd.SysProcAttr = &syscall.SysProcAttr{
+										Cloneflags:   ...|syscall.CLOUD_NEWPID,
+									}
+									...
+								}
+								
+								func child() {
+									...
+									must(syscall.Mount("proc", "proc", "proc", 0, ""))
+									...
+									must(syscall.Unmount("proc", 0))
+								}
+							</code></pre>
+						</figure>
+						<figure class="code">
+							<pre><code class="bash">
+								[root@localhost /test]$ ./fancker run bash
+								Running [bash], 29040
+								Running [bash], 1
+								[root@container /]$ ps aux
+								USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+								root         1  0.0  0.1 102888   960 pts/0    Sl   22:50   0:00 /proc/self/exe child bash
+								root         4  0.0  0.5 115968  2616 pts/0    S    22:50   0:00 bash
+								root        19  0.0  0.3 155360  1868 pts/0    R+   22:52   0:00 ps aux
+							</code></pre>
+						</figure>
+					</div>
+				</section>
+			</section>
+
+			<section class="subsection" data-background-image="lib/myplanet/img/single-container.jpg" data-background-size="cover">
+				<div class="grid-wrapper">
+					<aside class="notes">
+						Por enquanto, tudo bem. Mas, embora as APIs de tempo de execução do contêiner sejam adequadas para o
+						gerenciamento de contêineres individuais, elas são totalmente inadequadas quando se trata de gerenciar
+						aplicativos que podem incluir centenas de contêineres espalhados por vários hosts. Os contêineres precisam ser
+						gerenciados e conectados ao mundo externo para tarefas como agendamento, balanceamento de carga e distribuição, e
+						é nesse ponto que uma ferramenta de orquestração de contêineres, como o Kubernetes, entra em ação.
+					</aside>
+				</div>
+			</section>
+
+			<section class="subsection" data-background-image="lib/myplanet/img/containers-kubernetes.jpg" data-background-size="cover">
+				<div class="grid-wrapper">
+					<aside class="notes">
+						Por enquanto, tudo bem. Mas, embora as APIs de tempo de execução do contêiner sejam adequadas para o
+						gerenciamento de contêineres individuais, elas são totalmente inadequadas quando se trata de gerenciar
+						aplicativos que podem incluir centenas de contêineres espalhados por vários hosts. Os contêineres precisam ser
+						gerenciados e conectados ao mundo externo para tarefas como agendamento, balanceamento de carga e distribuição, e
+						é nesse ponto que uma ferramenta de orquestração de contêineres, como o Kubernetes, entra em ação.
+					</aside>
+				</div>
+			</section>
+
+			<section class="subsection" data-background-image="lib/myplanet/img/boats-wheel.jpg" data-background-size="cover">
+				<div class="grid-wrapper">
+					<div class="header">
+						<h1 style="color: #000; text-shadow: all;">Kubernetes</h1>
+					</div>
+					<aside class="notes">
+					</aside>
+				</div>
+			</section>
+
+
+			<section class="quote color--midnight present" id="kube-why" style="display: block;">
+				<div class="grid-wrapper">
+					<div class="logo"></div>
+					<blockquote>
+						<p>
+							Por que Kubernetes?
+						</p>
+						<hr>
+						<br>
+						<ol>
+							<li class="fragment">Benefícios no custo</li>
+							<li class="fragment">Adotado pela comunidade<ul>
+									<li>Linux Foundation</li>
+									<li>SIG</li>
+								</ul>
+							</li>
+							<li class="fragment">Aproveite as ferramentas comuns</li>
+							<li class="fragment">Entregas rápidas de mudanças</li>
+						</ol>
+					</blockquote>
+				</div>
+			</section>
+
+			<section class="quote color--midnight present" id="kube-why-2" style="display: block;">
+				<div class="grid-wrapper">
+					<div class="logo"></div>
+					<blockquote>
+						<p>
+							Comparando Kubernetes
+						</p>
+						<hr>
+						<br>
+						<ol>
+							<li class="fragment">K8 vs Docker Compose</li>
+							<li class="fragment">K8 vs ECS</li>
+							<li class="fragment">K8 vs Mesos</li>
+						</ol>
+					</blockquote>
+				</div>
+			</section>
+
+			<section class="quote color--dark" id="kube-how-concepts-pods">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Kubernetes Fundamental - Pods</div>
+					</div>
+					<div class="content">
+						<div id="vm-app-layers" style="background-color: #eee;">
+							<center><img src="lib/myplanet/img/pods-overview.svg" height="400px"></center>
+						</div>
+					</div>
+				</div>
+			</section>
+
+
+			<section class="quote color--dark" id="kube-how-concepts-node">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Kubernetes Fundamental - Node</div>
+					</div>
+					<div class="content">
+						<div id="vm-app-layers" style="background-color: #eee;">
+							<center><img src="lib/myplanet/img/node-overview.svg" height="500px"></center>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="quote color--dark" id="kube-how-concepts-cluster">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Kubernetes Fundamental - Cluster</div>
+					</div>
+					<div class="content">
+						<div id="vm-app-layers">
+							<center><img src="lib/myplanet/img/kubernetes-poc-architecture.png" height="500px"></center>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="quote color--dark" id="kube-how-concepts-full">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Kubernetes Fundamental - Tudo junto</div>
+					</div>
+					<div class="content">
+						<div id="vm-app-layers" style="background-color: #eee;">
+							<center><img src="lib/myplanet/img/kubernetes-full.png" width="750px"></center>
+						</div>
+					</div>
+				</div>
+			</section>
+
+
+			<section class="code color--dark" id="code--pod">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Kubernetes - Simples exemplo - Pod</div>
+					</div>
+					<figure class="code">
+						<pre><code class="yaml">
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.7.9
+    ports:
+    - containerPort: 80
+							</code></pre>
+						<!-- figcaption element is optional, can be placed above or below code  -->
+						<figcaption class="path">pod.yaml</figcaption>
+					</figure>
+				</div>
+			</section>
+
+			<section class="code color--dark" id="code--deployment">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Kubernetes - Simples Exemplo - Deployment</div>
+					</div>
+					<figure class="code">
+						<pre><code class="yaml">
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template: # create pods using pod definition in this template
+    metadata:
+      # unlike pod-nginx.yaml, the name is not included in the meta data as a unique name is
+      # generated from the deployment name
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80
+							</code></pre>
+						<!-- figcaption element is optional, can be placed above or below code  -->
+						<figcaption class="path">deployment.yaml</figcaption>
+					</figure>
+				</div>
+			</section>
+
+			<section class="code color--dark" id="code--service">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Kubernetes - Simples Exemplo - Service</div>
+					</div>
+					<figure class="code">
+						<pre><code class="yaml">
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  ports:
+  - port: 8000 # the port that this service should serve on
+    # the container on each pod to connect to, can be a name
+    # (e.g. 'www') or a number (e.g. 80)
+    targetPort: 80
+    protocol: TCP
+  # just like the selector in the deployment,
+  # but this time it identifies the set of pods to load balance
+  # traffic to.
+  selector:
+    app: nginx
+							</code></pre>
+						<!-- figcaption element is optional, can be placed above or below code  -->
+						<figcaption class="path">service.yaml</figcaption>
+					</figure>
+				</div>
+			</section>
+
+			<section class="quote color--dark" id="kube-how-networking">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Kubernetes Networking</div>
+					</div>
+					<div class="content">
+						<div id="vm-app-layers">
+							<center><img src="lib/myplanet/img/k8-net-overlay.png" height="500px"></center>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section class="end color--midnight" id="end-radiant">
+				<div class="logo-wrapper">
+					<div class="logo"><span class="visually-hidden">Fanatics</span></div>
+				</div>
+			</section>
+		</div>
+	</div>
+
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
+
+	<script>
+		// More info about config & dependencies:
+		// - https://github.com/hakimel/reveal.js#configuration
+		// - https://github.com/hakimel/reveal.js#dependencies
+		Reveal.initialize({
+			center: false,
+			width: "100%",
+			height: "100%",
+			margin: 0,
+			minScale: 1,
+			maxScale: 1,
+			history: true,
+			dependencies: [
+				{ src: 'plugin/markdown/marked.js' },
+				{ src: 'plugin/markdown/markdown.js' },
+				{ src: 'plugin/notes/notes.js', async: true },
+				{
+					src: 'plugin/highlight/highlight.js',
+					async: true,
+					condition: function () {
+						// Trim whitespace from code blocks, and prevent HTML escaping by default.
+						// This must be done before the plugin is loaded.
+						Array.prototype.forEach.call(
+							document.querySelectorAll('pre code'),
+							function (element) {
+								if (!element.hasAttribute('data-notrim')) {
+									element.setAttribute('data-trim', '');
+								}
+								if (!element.hasAttribute('data-escape')) {
+									element.setAttribute('data-noescape', '');
+								}
+							}
+						);
+						return true;
+					},
+					callback: function () {
+						hljs.initHighlightingOnLoad();
+					}
+				}
+			]
+		});
+	</script>
+</body>
+
+</html>
