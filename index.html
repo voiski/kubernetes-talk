@@ -34,6 +34,13 @@
 					<div class="logo logokube"><span class="visually-hidden"></span></div>
 					<div class="logo"><span class="visually-hidden"></span></div>
 				</div>
+				<aside class="notes">
+					Olá pessoal, vamos começar. Antes de mais nada queria explicar como vão ser as talks de hoje.
+
+					Esta primeira talk será mais uma introdução para a segunda talk onde veremos algo bem bacana implementado usando
+					golang para atender uma tendência de mercado que é o service-mech. E claro, usando kubernetes que é outra
+					tendência.
+				</aside>
 			</section>
 			<section class="title" id="title">
 				<div class="grid-wrapper">
@@ -45,9 +52,10 @@
 						<h1>Kubernetes</h1>
 						<div class="description">
 							<ol>
-								<li class="fragment">O que é Kubernetes?<ul>
-										<li>Virtualization/Containers</li>
-										<li>Kubernetes Objects</li>
+								<li class="fragment">O que é Kubernetes?
+									<ul>
+										<li class="fragment">Virtualization/Containers</li>
+										<li class="fragment">Kubernetes Objects</li>
 									</ul>
 								</li>
 								<li class="fragment">Por que Kubernetes?</li>
@@ -57,15 +65,18 @@
 					<div class="credit">
 						<hr />
 						<div class="label">Apresentado por</div>
+						<div class="role"><img width="178" height="238" data-src="lib/myplanet/img/giphy.gif" /></div>
+						<div class="name">Alan Voiski</div>
 						<div class="role">Cloud Engineering</div>
 					</div>
 				</div>
 				<aside class="notes">
-					Quando eu estava pensando no conteúdo dessa palestra, comecei a perceber que precisava parar de mergulhar em cada
-					conceito para terminar essa conversa em uma quantidade razoável de tempo. Tentei tocar cada aspecto fundamental
-					dos kubernetes sem ir muito fundo. Minha intenção é que possamos começar a falar sobre os diferentes tópicos em
-					uma alavanca mais profunda no futuro e eu encorage os membros do cloudeng a dar outras palestras sobre os assuntos
-					e me corrija a qualquer momento para que possamos aprender juntos.
+					Meu nome é Alan Voiski, eu sou um Freelancer contratado pela Fanatics e eu desempenho o papel de engenheiro das
+					nuvens, ou Cloud Engineer. Nesta primeira conversas vamos falar sobre kubernetes porém sem entrar em detalhes
+					muito afundo em todo seu universo que é bem extenso. O intuito aqui será mais apresentar sua definição e alguns
+					aspectos.
+
+
 				</aside>
 			</section>
 
@@ -82,6 +93,10 @@
 					</blockquote>
 				</div>
 				<aside class="notes">
+					Entao o que é kubernetes? Quem aqui já usou isso levanta a mão? Quem aqui nunca usou levanta a mão?
+
+					Kubernetes é um sistema para orquestração de aplicações contenerizadas.
+					Aplicações contenerizadas? O que é isso?
 					Se o Kubernetes estiver relacionado a aplicações em contêineres, precisamos entender primeiro os fundamentos dos
 					contêineres e qual é o problema que essa tecnologia está tentando resolver.
 
@@ -117,7 +132,22 @@
 							 data-fragment-index="1">Hardware</div>
 						</div>
 					</div>
+					<div class="content">
+						<div class="fragment">
+							<img data-src="lib/myplanet/img/worksonmachine_certificate.jpg" />
+						</div>
+					</div>
 				</div>
+				<aside class="notes">
+					Uma aplicação básica rodando isolada em um computador seria mais ou menos assim:
+					[leia os níveis]
+					Language runtime como uma jvm, um ruby, dotnet core, etc
+
+					Então imagine como você faz o deploy, atualização, rollback?
+					Nem sempre o que você colocar aqui vai ser o que você testou ou esperava. Tem sempre o risco de "Na minha máquina
+					funciona"
+					E como resolver isso, ou diminuir pelo menos?
+				</aside>
 			</section>
 
 			<section class="quote color--midnight present" id="Immutability" style="display: block;">
@@ -139,14 +169,27 @@
 						</ol>
 					</blockquote>
 				</div>
+				<aside class="notes">
+					Imutabilidade... que seria ter previsibilidade do ambiente.
+					As configurações vão ser as mesmas que você desenvolveu e testou.
+					Serão ambientes mais estáveis e que poderão ser duplicados de forma mais simples e rápida.
+					E se precisar, o rollback será um processo simples ou mesmo caso haja perda total e seja necessário recriar a
+					máquina, debugar, etc.
+				</aside>
 			</section>
 
 			<section class="subsection" data-background-image="lib/myplanet/img/cloud-vms.jpeg" data-background-size="cover">
 				<div class="grid-wrapper">
 					<h1 style="color: #FFF">Virtualização</h1>
-					<aside class="notes">O que está permitindo esse isolamento é o que chamamos hoje de máquinas virtuais ou VMs. Essa
+					<aside class="notes">
+						O que está permitindo esse isolamento é o que chamamos hoje de máquinas virtuais ou VMs. Essa
 						é a tecnologia que tornou você capaz de executar um pequeno aplicativo no mesmo hardware que o Netflix e outras
 						grandes empresas usam.
+						Embora você possa fazer aqui uma configuração manual e ter os mesmos problemas de work in my machine,
+						você agora pode criar uma imagem de uma vm rodando e reusá-la em outros ambientes, duplicar ela, promover para
+						produção, etc.
+						E com outro ganho, você pode aproveitar melhor os recursos da máquina que muitas vezes fica ociosa. Mas mantendo
+						o isolamento preservando assim um ambiente estável para sua aplicação.
 					</aside>
 				</div>
 			</section>
@@ -183,14 +226,15 @@
 						</div>
 					</div>
 				</div>
+				<aside class="notes">
+					Então vamos ver como fica sua aplicação.
+					~Hypervisor~ Aqui entra então esta camada que faz a astração do hardware virtualizando seu ambiente.
+					[~User Processess se pergutarem~ O OS gerencia alguns proccessos que são tidos como críticos para o seu
+					funcionamento sendo chamados de system proccess e serão executados no iniciar da máquina. Todo o resto será user
+					processess e neste caso como vc virtualiza em cima de outra camada, sua definição é esta que inclusive não são
+					críticas para a máquina em si.]
+				</aside>
 			</section>
-
-
-			<!-- <section class="subsection" data-background-image="lib/myplanet/img/reach-cloud.jpg" data-background-size="cover">
-					<div class="grid-wrapper">
-						<h1 style="color: #FFF">Cloud</h1>
-					</div>
-				</section> -->
 
 			<section class="quote color--dark" id="containerized-app">
 				<div class="grid-wrapper">
@@ -225,13 +269,19 @@
 								 data-fragment-index="1">Hardware</div>
 							</div>
 						</div>
-						<aside class="notes">Os contêineres e a tecnologia que o contêiner constrói permitem que as pessoas utilizem um
-							programa que desejam executar no computador de destino - um servidor, que pode ser instalado em um laptop que
-							pode ser executado em um ambiente de teste ou em uma produção ambiente com muito poucas mudanças e com um alto
-							grau de previsibilidade.
+						<aside class="notes">
+							E os containers?
+							Eles nos dão a sensação de virtualização mas eles estão aqui mais para apresentar um isolamento.
 
-							Depois de ter esse bloco de construção de ser capaz de executar um programa específico de forma confiável em um
-							computador particular</aside>
+							Os contêineres e a tecnologia que o contêiner constrói permitem que as pessoas utilizem um
+							programa que desejam executar no computador de destino
+							- que pode ser instalado em um laptop
+							- que pode ser executado em um ambiente de teste
+							- ou em um ambiente produção
+							Todos com muito poucas mudanças e com um alto grau de previsibilidade.
+
+							Eles são assim mais fáceis de compartilhar e mais confiáveis devido sua imutabilidade.
+						</aside>
 					</div>
 				</div>
 			</section>
@@ -244,21 +294,39 @@
 							<div class="section">O que é um container?</div>
 						</div>
 						<ol>
-							<li class="fragment">Linux Namespaces (2002)<ul>
-									<li>Isolamento processos(PID), network, usuário, etc.</li>
-								</ul>
-							</li>
-							<li class="fragment">Control Groups (2007)<ul>
-									<li>CPU, memória, I/O, network, etc.</li>
+							<li class="fragment">Não é uma virtual machine</li>
+							<li class="fragment">Usa Implementações do kernel Linux
+								<ul>
+									<li class="fragment">Linux Namespaces (2002)<ul>
+											<li>Isolamento processos(PID), network, usuário, etc.</li>
+										</ul>
+									</li>
+									<li class="fragment">Control Groups (2007)<ul>
+											<li>Limita recursos de CPU, memória, I/O, network, etc.</li>
+										</ul>
+									</li>
 								</ul>
 							</li>
 							<li class="fragment">Implementações mais usadas:<ul>
 									<li>LXC/LXD (2007)</li>
-									<li>Docker (2013)</li>
+									<li>Docker (2013) <span class="fragment">
+											<code><</code>----- Este cara aqui!</span>
+									</li>
 								</ul>
 							</li>
 						</ol>
 					</div>
+
+					<aside class="notes">
+						Mas o que é um container?
+						Vamos extressar isso só um pouco para desmistificá-lo
+						Não é uma virtual machine, ele apenas isola o processo.
+						Como? Usando implementações do próprio kernel do linux tais como:
+						[ler]
+						LXC/LXD ou linux containers
+						Docker no qual vamos focar
+						Mas como assim é só um isolamento e não uma vm?
+					</aside>
 				</section>
 				<section class="quote color--dark" id="containerized-demystification-base">
 					<div class="grid-wrapper">
@@ -278,14 +346,22 @@
 								}
 							</code></pre>
 						</figure>
-						<figure class="code">
+						<figure class="code fragment">
 							<pre><code class="bash">
+								[root@localhost /test]$ ./fancker run echo "Olá brasil!"
+								Olá brasil!
 								[root@localhost /test]$ ./fancker run bash
 								[root@localhost /test]$ hostname
 								localhost.localdomain
 							</code></pre>
 						</figure>
 					</div>
+					<aside class="notes">
+						Bom, começando pelo básico, vejamos este simple wrap.
+						Ele só está reexecutando o comando que eu passar para ele.
+						Executando o comando `bash` por exemplo podemos ver que ele manteve o mesmo hostname do host. Claro, eu não tenho
+						isolamento.
+					</aside>
 				</section>
 				<section class="quote color--dark" id="containerized-demystification-namespace">
 					<div class="grid-wrapper">
@@ -312,7 +388,7 @@
 								}
 							</code></pre>
 						</figure>
-						<figure class="code">
+						<figure class="code fragment">
 							<pre><code class="bash">
 								[root@localhost /test]$ ./fancker run bash
 								[root@container /]$ hostname
@@ -320,6 +396,11 @@
 							</code></pre>
 						</figure>
 					</div>
+					<aside class="notes">
+						Agora preste atenção nestas alterações. Eu duplico o aquele código criando esta funcão child e faço a outra
+						chamar a child. Na função run eu crio um novo namespace com estas flagas e desassocio a child da principal.
+						Na child eu renomeio o hostname para container.
+					</aside>
 				</section>
 				<section class="quote color--dark" id="containerized-demystification-chroot-1">
 					<div class="grid-wrapper">
@@ -340,7 +421,7 @@
 								}
 							</code></pre>
 						</figure>
-						<figure class="code">
+						<figure class="code fragment">
 							<pre><code class="bash">
 								[root@localhost /test]$ ./fancker run bash
 								Running [bash], 28820
@@ -356,6 +437,11 @@
 							</code></pre>
 						</figure>
 					</div>
+					<aside class="notes">
+						Agora vamos ver como está o isolamento dos processos simplesmente printando eles.
+						Você pode ver esta longa lista incluindo o fancker com três processos, sua chamada no host e mais duas para cada
+						função. E então o bash e o comando ps.
+					</aside>
 				</section>
 				<section class="quote color--dark" id="containerized-demystification-chroot-2">
 					<div class="grid-wrapper">
@@ -393,7 +479,28 @@
 							</code></pre>
 						</figure>
 					</div>
+					<aside class="notes">
+						Eu então mapeio no run para ele também criar uma nova árvore de processos. No child eu monto o diretório do
+						processo, para que o ps funciona devido o desvinculamento, ou isolamento.
+						Agora temos apenas o exe child com PID igual a 1, que deu origem a tudo e o bash com o comando ps que eu dei.
+
+						Isso é só para exemplificar como é simples e que isso não é do docker, mas sim do kernel do linux.
+					</aside>
 				</section>
+			</section>
+
+			<section class="demodocker color--dark" id="demodocker-radiant">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Demo Docker😈</div>
+					</div>
+					<div class="content">
+						<div id="vm-app-layers">
+							<center><img src="lib/myplanet/img/demo.jpg" height="500px"></center>
+						</div>
+					</div>
+				</div>
 			</section>
 
 			<section class="subsection" data-background-image="lib/myplanet/img/single-container.jpg" data-background-size="cover">
@@ -430,6 +537,22 @@
 				</div>
 			</section>
 
+			<section class="quote color--midnight present" id="quote2--midnight" style="display: block;">
+				<div class="grid-wrapper">
+					<div class="logo"></div>
+					<blockquote>
+						<p>
+							O que é kubernetes?
+						</p>
+						<hr data-fragment-index="1">
+						<cite data-fragment-index="1">Kubernetes é um sistema para orquestração de aplicações
+							contenerizadas.</cite>
+					</blockquote>
+				</div>
+				<aside class="notes">
+					Voltamos ao primeiro slide, rá... zeramos no easy, agora vamos no hard. Brincadeira, continuando...
+				</aside>
+			</section>
 
 			<section class="quote color--midnight present" id="kube-why" style="display: block;">
 				<div class="grid-wrapper">
@@ -441,7 +564,14 @@
 						<hr>
 						<br>
 						<ol>
-							<li class="fragment">Benefícios no custo</li>
+							<li class="fragment">Benefícios no custo
+								<ul>
+									<li>Usa pouco recurso</li>
+									<li>Open source</li>
+									<li>Diversas funcionalidades que automatizam seu gerenciamento</li>
+								</ul>
+
+							</li>
 							<li class="fragment">Adotado pela comunidade<ul>
 									<li>Linux Foundation</li>
 									<li>SIG</li>
@@ -452,6 +582,19 @@
 						</ol>
 					</blockquote>
 				</div>
+				<aside class="notes">
+					Por que kubernetes?
+					Sabemos que containers são menos caros que VMS já que fazemos um melhor proveito dos recursos ociosos.
+					O kubernetes gerencia estes containers e como ele será implantado, replicado, etc.
+					Então temos benefícios primeiro de custo já que usa pouco recurso e é open source. Ele também vem com um
+					ecosistema de funcionalidades que irão automatizar sua gestão de recursos salvando tempo e evitando perdas.
+					Outra questão é sua comunidade que é imensa e tem contribuído ativamente. Ele também conta com grandes comunidades
+					como o Linux Foundation, o SIG e grandes empresas colaboradoras como google, ibm hat, etc.
+					Ele é como um bundle que reusa váriass ferramentas já conhecidas porém apresentando o ecosistema interligado e com
+					as melhores práticas. Um exemplo são seus componentes base como o etcd que é tipo um nosql distribuído com eleição
+					de lider.
+					Sua adoção permite estratégias de entraga rápida, como blue/green nativo ou mesmo canary com uso de plugins.
+				</aside>
 			</section>
 
 			<section class="quote color--midnight present" id="kube-why-2" style="display: block;">
@@ -464,12 +607,26 @@
 						<hr>
 						<br>
 						<ol>
-							<li class="fragment">K8 vs Docker Compose</li>
-							<li class="fragment">K8 vs ECS</li>
-							<li class="fragment">K8 vs Mesos</li>
+							<li class="fragment">K8s vs Docker Compose(swarm)</li>
+							<li class="fragment">K8s vs ECS</li>
+							<li class="fragment">K8s vs Mesos</li>
+							<li class="fragment">K8s vs Nomad</li>
 						</ol>
 					</blockquote>
 				</div>
+				<aside class="notes">
+					Bom, comparando ele com as mais conhecidas.
+					Temos docker compose, oficionalizado a partir de um projeto chamado fig. Ele é muito básico e simples em relação
+					ao kubernetes, bom para fazer testes locais mas não para produção.
+					ECS é a solução da Amazon e além de não ser agnóstico te prendendo a amazon, ele também é muito simples fornecendo
+					mais a questão de escalonamento e gestão de nós. Claro que você sempre pode combiná-lo com os outros recursos da
+					Amazon, mas isso só gera ainda mais dependências.
+					Mesos é bem semelhante ao kubernetes em alguns aspéctos porém ele permite rodar tanto containers como vms. As
+					grandes features dele são reservadas para versão paga e sua comunidade não é tão ativa. Lembrando que comunidade
+					ativa significa as vezes melhor suporte sem custos, mais integrações com outros serviços e evolução rápida.
+					Nomad presa pelo simples e sobre fazer só uma parte do corpo de serviços. Ele basicamente só faz a gestão e usará
+					outros serviços da hashcorp como consul para service discovery.
+				</aside>
 			</section>
 
 			<section class="quote color--dark" id="kube-how-concepts-pods">
@@ -484,6 +641,10 @@
 						</div>
 					</div>
 				</div>
+				<aside class="notes">
+					O pod é o menor componente do kubernetes, é onde irá rodar o seu serviço. Podemos ver aqui no exemplo um pod só
+					com um container, um outro com vários e alguns volumes mapeados.
+				</aside>
 			</section>
 
 
@@ -499,6 +660,13 @@
 						</div>
 					</div>
 				</div>
+				<aside class="notes">
+					O node é uma simples máquina virtual ou física ligada a um cluster.
+					Temos dois tipos, os master que faz a orquestração do cluster e os workers que serão responsáveis por rodar as
+					aplicações.
+					O master também roda pods e outros componentes semelhante ao workers, mas estes são cores do kubernetes ou mesmo
+					recursos marcados como plugins.
+				</aside>
 			</section>
 
 			<section class="quote color--dark" id="kube-how-concepts-cluster">
@@ -513,6 +681,12 @@
 						</div>
 					</div>
 				</div>
+				<aside class="notes">
+					Temos então o cluster que é o conjunto todo. Aqui por exemplo vemos um conjunto de workers e masters.
+
+					Você pode ter tanto um cluster aguentando toda a carga como fazer um isolamento por ambiente, como por exemplo um
+					para desenvolvimento, outro para tests e um para produção.
+				</aside>
 			</section>
 
 			<section class="quote color--dark" id="kube-how-concepts-full">
@@ -527,6 +701,11 @@
 						</div>
 					</div>
 				</div>
+				<aside class="notes">
+					Agora aqui temos uma outra visão, que seria a visão interna ignorando quantidade de nodes.
+					Aqui mostro outro componente importante no ecosistema que é o service. Ele funciona como um balanceador dos pods,
+					fazendo seleção e o papel de service discovery.
+				</aside>
 			</section>
 
 
@@ -553,6 +732,9 @@ spec:
 						<figcaption class="path">pod.yaml</figcaption>
 					</figure>
 				</div>
+				<aside class="notes">
+					Aqui é um simples pod, caso você queira implantar ele
+				</aside>
 			</section>
 
 			<section class="code color--dark" id="code--deployment">
@@ -589,6 +771,10 @@ spec:
 						<figcaption class="path">deployment.yaml</figcaption>
 					</figure>
 				</div>
+				<aside class="notes">
+					O pod pode ser também criado pelo deployment que permite definis quantas replicas, tal como um auto scale.
+					Usamos ele em vez de um pod descriptor, já que aqui temos mais controle e também o poder de escalonamento.
+				</aside>
 			</section>
 
 			<section class="code color--dark" id="code--service">
@@ -620,6 +806,10 @@ spec:
 						<figcaption class="path">service.yaml</figcaption>
 					</figure>
 				</div>
+				<aside class="notes">
+					Aqui temos a definição do service, que faz o load balance. Seguindo exemplo ele vai selecionar todos os pods com a
+					tag app igual a nginx.
+				</aside>
 			</section>
 
 			<section class="quote color--dark" id="kube-how-networking">
@@ -631,6 +821,28 @@ spec:
 					<div class="content">
 						<div id="vm-app-layers">
 							<center><img src="lib/myplanet/img/k8-net-overlay.png" height="500px"></center>
+						</div>
+					</div>
+				</div>
+				<aside class="notes">
+					Aqui temos para concluir nosssa jornada, antes de pararmos para demo, o desenho da rede.
+					Você pode tanto usar a rede local dando ips da sua rede aos pods, como fazer seu isolamento com a rede overlay.
+					O bom do isolamento é que vc pode ter toda uma subrede sem consumir seus ips. Se você pensar que serão muitos
+					pods, eles irão consumir muitos ips, então é uma boa ter este isolamento.
+					Assim a única forma de ingresso será pelo controle do kubernetes funcionando como um proxy reverso de todo
+					ecosistema.
+				</aside>
+			</section>
+
+			<section class="demoend color--dark" id="demoend-radiant">
+				<div class="grid-wrapper">
+					<div class="header">
+						<div class="logo"></div>
+						<div class="section">Demo kubernetes 😈</div>
+					</div>
+					<div class="content">
+						<div id="vm-app-layers">
+							<center><img src="lib/myplanet/img/demo.jpg" height="500px"></center>
 						</div>
 					</div>
 				</div>
